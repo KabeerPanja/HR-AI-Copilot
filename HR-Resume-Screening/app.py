@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-from config import APP_TITLE, RECOMMENDATION_THRESHOLD, BUSINESS_MODEL_TEXT
+from config import APP_TITLE, RECOMMENDATION_THRESHOLD
 from src.resume_parser import parse_resume
 from src.feature_engineering import build_feature_vector, feature_dict_to_array
 from src.prediction_service import predict_fit_probability, ensure_model_ready
