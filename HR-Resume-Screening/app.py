@@ -73,8 +73,6 @@ if page == "1. Upload & Screen":
 
     with col1:
         st.subheader("Step 1: Job Description")
-        jd_input_method = st.radio("Provide Job Description via:", ["Upload File"], horizontal=True)
-
         if jd_input_method == "Paste Text":
             jd_text = st.text_area("Paste the Job Description here", height=220, value=st.session_state["jd_text"])
         else:
