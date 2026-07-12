@@ -28,6 +28,13 @@ for folder in [DATA_DIR, SAMPLE_RESUMES_DIR, SAVED_MODEL_DIR, DATABASE_DIR, REPO
     folder.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
+# ENVIRONMENT VARIABLES (API KEYS)
+# ---------------------------------------------------------------------------
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai")  
+
+# ---------------------------------------------------------------------------
 # APP CONSTANTS
 # ---------------------------------------------------------------------------
 APP_TITLE = "HR Resume Screening Copilot"
@@ -44,7 +51,6 @@ FEATURE_NAMES = [
 # ---------------------------------------------------------------------------
 # SKILL TAXONOMY
 # ---------------------------------------------------------------------------
-
 MASTER_SKILLS = [
     # Programming / Tech
     "python", "java", "c++", "c#", "javascript", "typescript", "sql", "r programming",
@@ -99,3 +105,6 @@ EDUCATION_SCORES = {
     "high school": 0.2,
     "intermediate": 0.2,
 }
+
+Key Metrics for Scaling: Cost-per-screened-resume, recruiter hours saved per month, HR approval \
+rate vs AI recommendation (model trust indicator), and net revenue retention across tiers."""
