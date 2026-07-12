@@ -73,14 +73,11 @@ if page == "1. Upload & Screen":
 
     with col1:
         st.subheader("Step 1: Job Description")
-        if jd_input_method == "Paste Text":
-            jd_text = st.text_area("Paste the Job Description here", height=220, value=st.session_state["jd_text"])
-        else:
-            jd_file = st.file_uploader("Upload Job Description (PDF/DOCX)", type=["pdf", "docx"])
-            jd_text = ""
-            if jd_file is not None:
-                jd_text = parse_resume(jd_file.name, jd_file.read())
-                st.text_area("Extracted Job Description Text", value=jd_text, height=220, disabled=True)
+        jd_file = st.file_uploader("Upload Job Description (PDF/DOCX)", type=["pdf", "docx"])
+        jd_text = ""
+        if jd_file is not None:
+            jd_text = parse_resume(jd_file.name, jd_file.read())
+            st.text_area("Extracted Job Description Text", value=jd_text, height=220, disabled=True)
 
         st.session_state["jd_text"] = jd_text
 
