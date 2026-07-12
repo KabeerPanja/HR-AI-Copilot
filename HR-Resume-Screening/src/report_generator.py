@@ -14,8 +14,6 @@ from reportlab.platypus import (
     PageBreak,
 )
 
-from config import BUSINESS_MODEL_TEXT
-
 
 def _build_styles():
     styles = getSampleStyleSheet()
