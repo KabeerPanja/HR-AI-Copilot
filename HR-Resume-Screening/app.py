@@ -167,7 +167,7 @@ if page == "1. Upload & Screen":
 # ---------------------------------------------------------------------------
 # PAGE 2: HUMAN IN THE LOOP REVIEW
 # ---------------------------------------------------------------------------
-elif page == "2. HR Review":
+elif page == "2. Human-in-the-Loop Review":
     st.title("HR Review")
     st.write("Review each AI recommendation and Approve, Reject, or Modify the decision.")
 
