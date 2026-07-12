@@ -1,17 +1,3 @@
-"""
-llm_service.py
----------------
-IMPORTANT (handbook compliance): Is project mein LLM sirf REASONING,
-SUMMARIZATION, EXPLANATION aur REPORT TEXT generate karne ke liye use
-hota hai. Candidate ka "fit score" predict karne ka kaam sirf ANN
-(models/ann_model.py) karta hai. LLM kabhi bhi primary predictive
-engine ke taur par use nahi hota.
-
-Hum yahan OpenAI API use kar rahe hain. Agar API key configure nahi
-hai to graceful fallback (template-based text) provide karte hain
-taake app crash na ho.
-"""
-
 from openai import OpenAI
 from config import OPENAI_API_KEY, OPENAI_MODEL
 
