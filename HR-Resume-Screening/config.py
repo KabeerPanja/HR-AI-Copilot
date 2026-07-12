@@ -105,6 +105,3 @@ EDUCATION_SCORES = {
     "high school": 0.2,
     "intermediate": 0.2,
 }
-
-Key Metrics for Scaling: Cost-per-screened-resume, recruiter hours saved per month, HR approval \
-rate vs AI recommendation (model trust indicator), and net revenue retention across tiers."""
