@@ -22,7 +22,7 @@ from src.utils import generate_id
 # ---------------------------------------------------------------------------
 # PAGE CONFIG & INITIAL SETUP
 # ---------------------------------------------------------------------------
-st.set_page_config(page_title=APP_TITLE, page_icon="👩🧑‍💼", layout="wide")
+st.set_page_config(page_title=APP_TITLE, page_icon="🧑‍💼", layout="wide")
 
 init_db()
 
@@ -38,7 +38,7 @@ if "jd_text" not in st.session_state:
 # ---------------------------------------------------------------------------
 # SIDEBAR NAVIGATION
 # ---------------------------------------------------------------------------
-st.sidebar.title("👩🧑‍💼 Ismail HR  Copilot")
+st.sidebar.title("HR Resume Copilot")
 page = st.sidebar.radio(
     "Navigate",
     [
