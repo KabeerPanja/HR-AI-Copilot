@@ -42,8 +42,8 @@ def get_secret(key: str, default: str = "") -> str:
     return os.getenv(key, default)
 
 OPENAI_API_KEY = get_secret("OPENAI_API_KEY", "")
-OPENAI_MODEL = get_secret("OPENAI_MODEL", "")
-OPENAI_BASE_URL = get_secret("OPENAI_BASE_URL", "")
+OPENAI_MODEL = get_secret("OPENAI_MODEL", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free")
+OPENAI_BASE_URL = get_secret("OPENAI_BASE_URL", "https://openrouter.ai/api/v1")
 GROQ_API_KEY = get_secret("GROQ_API_KEY", "")
 GROQ_MODEL = get_secret("GROQ_MODEL", "")
 LLM_PROVIDER = get_secret("LLM_PROVIDER", "openai")
