@@ -67,9 +67,17 @@ def init_db():
 
 
 def insert_candidate(record: dict):
-    """Naye candidate ka pura record database mein insert karta hai."""
     with get_connection() as conn:
         cursor = conn.cursor()
+        clean_record = {}
+
+        for key, value in record.items():
+            if isinstance(value, (list, dict)):
+                clean_record[key] = json.dumps(value)
+            else:
+                clean_record[key] = value
+
+        record = clean_record
         cursor.execute(
             """
             INSERT OR REPLACE INTO candidates (
