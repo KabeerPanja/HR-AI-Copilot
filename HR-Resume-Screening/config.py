@@ -28,14 +28,25 @@ for folder in [DATA_DIR, SAMPLE_RESUMES_DIR, SAVED_MODEL_DIR, DATABASE_DIR, REPO
     folder.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
-# ENVIRONMENT VARIABLES (API KEYS)
+# ENVIRONMENT VARIABLES & STREAMLIT SECRETS (API KEYS)
 # ---------------------------------------------------------------------------
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai")  
+import streamlit as st
+
+def get_secret(key: str, default: str = "") -> str:
+    """Streamlit Secrets manager se secret read karta hai, warna fallback to environment variables."""
+    try:
+        if key in st.secrets:
+            return st.secrets[key]
+    except Exception:
+        pass
+    return os.getenv(key, default)
+
+OPENAI_API_KEY = get_secret("OPENAI_API_KEY", "")
+OPENAI_MODEL = get_secret("OPENAI_MODEL", "")
+OPENAI_BASE_URL = get_secret("OPENAI_BASE_URL", "")
+GROQ_API_KEY = get_secret("GROQ_API_KEY", "")
+GROQ_MODEL = get_secret("GROQ_MODEL", "")
+LLM_PROVIDER = get_secret("LLM_PROVIDER", "openai")
 
 # ---------------------------------------------------------------------------
 # APP CONSTANTS
