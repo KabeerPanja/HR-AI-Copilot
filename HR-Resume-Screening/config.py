@@ -189,3 +189,4 @@ EDUCATION_SCORES = {
     "intermediate": 0.2,
 }
 
+BUSINESS_MODEL_TEXT=""
