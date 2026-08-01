@@ -23,6 +23,7 @@ from reportlab.platypus import (
     TableStyle,
     PageBreak,
 )
+from config import BUSINESS_MODEL_TEXT
 
 
 def _build_styles():
