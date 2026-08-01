@@ -6,35 +6,39 @@ SUMMARIZATION, EXPLANATION aur REPORT TEXT generate karne ke liye use
 hota hai. Candidate ka "fit score" predict karne ka kaam sirf ANN
 (models/ann_model.py) karta hai. LLM kabhi bhi primary predictive
 engine ke taur par use nahi hota.
-
-Hum yahan OpenAI API use kar rahe hain. Agar API key configure nahi
-hai to graceful fallback (template-based text) provide karte hain
-taake app crash na ho.
 """
 
 from openai import OpenAI
-from config import OPENAI_API_KEY, OPENAI_MODEL
+from config import OPENAI_API_KEY, OPENAI_MODEL, OPENAI_BASE_URL
 
 _client = None
 
 
 def _get_client():
-    """OpenAI client ko lazy initialize karta hai."""
+    """OpenAI/OpenRouter client ko lazy initialize karta hai."""
     global _client
+
     if _client is None and OPENAI_API_KEY:
-        _client = OpenAI(api_key=OPENAI_API_KEY)
+        if OPENAI_BASE_URL:
+            _client = OpenAI(
+                api_key=OPENAI_API_KEY,
+                base_url=OPENAI_BASE_URL,
+            )
+        else:
+            _client = OpenAI(api_key=OPENAI_API_KEY)
+
     return _client
 
 
 def _call_llm(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> str:
     """Generic LLM call wrapper with error handling."""
+
     client = _get_client()
 
     if client is None:
         return (
-            "[LLM not configured] OPENAI_API_KEY .env file mein set nahi hai. "
-            "Yeh sirf ek placeholder text hai — real AI-generated text ke liye "
-            "apni API key .env file mein add karein."
+            "[LLM not configured] Please configure OPENAI_API_KEY in "
+            "Streamlit Secrets or your .env file."
         )
 
     try:
@@ -44,22 +48,28 @@ def _call_llm(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> st
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            max_tokens=max_tokens,
             temperature=0.4,
+            max_tokens=max_tokens,
         )
+
         return response.choices[0].message.content.strip()
-    except Exception as exc:  # noqa: BLE001
-        return f"[LLM Error] Response generate nahi ho saka: {exc}"
+
+    except Exception as exc:
+        return f"[LLM Error] {exc}"
 
 
 def summarize_resume(resume_text: str) -> str:
-    """Resume ka concise professional summary generate karta hai (LLM reasoning task)."""
+    """Generate a concise professional resume summary."""
+
     system_prompt = (
-        "You are an expert HR analyst. Summarize the candidate's resume in 3-4 concise "
-        "bullet points covering their core expertise, experience level, and standout strengths. "
-        "Be factual and professional. Do not invent information not present in the resume."
+        "You are an expert HR analyst. Summarize the candidate's resume in "
+        "3-4 concise bullet points covering their core expertise, experience "
+        "level, and standout strengths. Be factual and professional. "
+        "Do not invent information."
     )
+
     user_prompt = f"Resume text:\n\n{resume_text[:4000]}"
+
     return _call_llm(system_prompt, user_prompt, max_tokens=300)
 
 
@@ -72,15 +82,14 @@ def generate_explanation_narrative(
     missing_skills: list,
 ) -> str:
     """
-    SHAP explainability data ko natural language explanation mein convert karta hai.
-    Yeh LLM ka "explanation generation" reasoning task hai — prediction khud
-    ANN model ne pehle hi kar li hoti hai, LLM sirf isko explain karta hai.
+    Converts SHAP feature contributions into a natural-language explanation.
     """
+
     system_prompt = (
-        "You are an HR AI Co-Pilot assistant. Explain, in plain professional English, "
-        "why the AI model gave this recommendation for a candidate. Reference the top "
-        "contributing factors provided. Keep it to 4-5 sentences. Be balanced and objective, "
-        "mentioning both strengths and gaps if present."
+        "You are an HR AI Co-Pilot assistant. Explain in professional English "
+        "why the AI model gave this recommendation. Mention the strongest "
+        "positive and negative factors, matched skills, missing skills, and "
+        "keep the explanation to 4-5 sentences."
     )
 
     contributions_text = "\n".join(
@@ -91,22 +100,23 @@ def generate_explanation_narrative(
     user_prompt = (
         f"Candidate: {candidate_name}\n"
         f"AI Fit Probability: {fit_probability:.2%}\n"
-        f"Confidence Score: {confidence}%\n"
-        f"Top contributing factors (SHAP values):\n{contributions_text}\n"
-        f"Matched skills: {', '.join(matched_skills) if matched_skills else 'None found'}\n"
-        f"Missing required skills: {', '.join(missing_skills) if missing_skills else 'None'}\n\n"
-        "Write a short, clear explanation for the HR reviewer."
+        f"Confidence Score: {confidence}%\n\n"
+        f"Top SHAP Contributions:\n{contributions_text}\n\n"
+        f"Matched Skills: {', '.join(matched_skills) if matched_skills else 'None'}\n"
+        f"Missing Skills: {', '.join(missing_skills) if missing_skills else 'None'}"
     )
 
     return _call_llm(system_prompt, user_prompt, max_tokens=250)
 
 
 def generate_report_narrative(summary_stats: dict) -> str:
-    """Poori batch screening ke liye ek executive summary narrative generate karta hai."""
+    """Generate executive summary for screening report."""
+
     system_prompt = (
-        "You are an HR analytics assistant writing an executive summary for a hiring "
-        "manager. Be concise (5-6 sentences), professional, and data-driven."
+        "You are an HR analytics assistant. Write a concise executive summary "
+        "for a hiring manager in 5-6 professional sentences."
     )
+
     user_prompt = (
         f"Total candidates screened: {summary_stats.get('total')}\n"
         f"AI Recommended: {summary_stats.get('recommended')}\n"
@@ -114,7 +124,7 @@ def generate_report_narrative(summary_stats: dict) -> str:
         f"HR Approved: {summary_stats.get('approved')}\n"
         f"HR Rejected: {summary_stats.get('rejected')}\n"
         f"HR Modified: {summary_stats.get('modified')}\n"
-        f"Average AI confidence: {summary_stats.get('avg_confidence')}%\n\n"
-        "Write an executive summary for this hiring batch."
+        f"Average AI Confidence: {summary_stats.get('avg_confidence')}%"
     )
+
     return _call_llm(system_prompt, user_prompt, max_tokens=350)
