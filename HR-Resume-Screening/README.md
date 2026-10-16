@@ -1,4 +1,4 @@
-# AI Co-Pilot for HR Resume Screening (👩🧑‍💼 Ismail HR Copilot)
+# AI Co-Pilot for HR Resume Screening (HR Copilot)
 
 A complete, hackathon-ready **AI Co-Pilot** built for the "AI Innovation Hackathon" theme
 *"Build an AI Co-Pilot for Industry"* — solving the **HR Resume Screening** challenge.
